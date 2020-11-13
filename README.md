@@ -1,2 +1,3 @@
-# evaluation-task-docker
-docker for project https://github.com/fantomas/evaluation-task
+# procurement system
+
+this is docker repo for the project [evaluation-task](https://github.com/fantomas/evaluation-task)

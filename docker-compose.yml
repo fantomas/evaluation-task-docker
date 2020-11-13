@@ -1,0 +1,75 @@
+version: "3"
+
+networks:
+  backend:
+
+volumes:
+  db_app:
+
+services:
+  php:
+    container_name: mysupply-php-fpm
+    build:
+        context: ./php
+        args:
+            TIMEZONE: ${TIMEZONE}
+    volumes:
+        - ../evaluation-task/:/var/www/
+    environment:
+        DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    #ports:
+    #    - 9001:9001
+    networks:
+        - backend
+        
+  nginx:
+    container_name: mysupply-nginx
+    build:
+        context: ./nginx
+    volumes:
+        - ../evaluation-task/:/var/www/
+    ports:
+        - 83:80
+    networks:
+        - backend
+
+  #db:
+  #  container_name: mysql
+  #  image: mysql:8.0.20
+  #  command: --default-authentication-plugin=mysql_native_password
+  #  volumes:
+  #      - "db_app:/var/lib/mysql"
+  #  environment:
+  #      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+  #      MYSQL_DATABASE: ${DB_DATABASE}
+  #      MYSQL_USER: ${DB_USERNAME}
+  #      MYSQL_PASSWORD: ${DB_PASSWORD}
+  #  ports:
+  #      - 3306:3306
+  #  networks:
+  #      - backend
+
+  db:
+    container_name: mysupply-db
+    image: postgres:9.6-alpine
+    environment:
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+    ports: 
+        - 5435:5432
+    networks:
+        - backend
+        
+  #phpmyadmin:
+  #  container_name: phpmyadmin
+  #  image: phpmyadmin/phpmyadmin
+  #  ports:
+  #      - 8181:80
+  #  environment:
+  #      PMA_HOST: db
+  #      PMA_PORT: 3306
+  #  depends_on:
+  #      - db
+  #  networks:
+  #      - backend
